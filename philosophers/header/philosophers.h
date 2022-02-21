@@ -6,7 +6,7 @@
 /*   By: gyeon <gyeon@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/11/22 18:00:22 by gyeon             #+#    #+#             */
-/*   Updated: 2022/02/21 19:01:32 by gyeon            ###   ########.fr       */
+/*   Updated: 2022/02/21 19:26:03 by gyeon            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,13 +35,6 @@
 #define NUM_OF_EAT		4
 #define INT_MAX 2147483647
 
-typedef struct s_setting
-{
-	int				philo_info[5];
-		pthread_mutex_t	*mutexs;
-		pthread_t 		*thread;
-} t_setting;
-
 typedef struct s_philo
 {
 	int				idx_of_philo;
@@ -49,6 +42,7 @@ typedef struct s_philo
 	pthread_mutex_t	forks[2];
 	pthread_t 		thread;
 	// t_philo는 배열 형태로 선언되므로, 시작주소만 안다면 mornitor에서 각 죽는 시간에 접근 가능.
+	unsigned long long	start_time;
 	unsigned long long	when_die;
 	int 			*is_die;
 	int 			cnt_eat;

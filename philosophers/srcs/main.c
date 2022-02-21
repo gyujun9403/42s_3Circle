@@ -6,13 +6,13 @@
 /*   By: gyeon <gyeon@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/11/22 16:21:51 by gyeon             #+#    #+#             */
-/*   Updated: 2022/02/21 19:03:29 by gyeon            ###   ########.fr       */
+/*   Updated: 2022/02/21 19:38:00 by gyeon            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../header/philosophers.h"
 
-int	check_philo_info(int *parsed_input, char **av)
+int	check_philo_info(const int parsed_input[5], char **av)
 {
 	size_t	idx;
 	int result_flag;
@@ -52,7 +52,7 @@ int	parse_philo_info(int parsed_input[5], char **av)
 	return (check_philo_info(parsed_input, av));
 }
 
-pthread_mutex_t *init_mutexs(int *parsed_input)
+pthread_mutex_t *init_mutexs(const int parsed_input[5])
 {
 	int				idx;
 	pthread_mutex_t	*result;
@@ -107,11 +107,11 @@ void *routine(void *philo)
 	// 죽거나, 밥을 다 먹을때까지 무한루프
 	while (*(casted_philo->is_die) == FALSE)
 	{
-		printf("%llu\t%d\tis thinking\n", get_time(), casted_philo->idx_of_philo);
+		printf("%llu\t%d\tis thinking\n", get_time() - casted_philo->start_time, casted_philo->idx_of_philo);
 		pthread_mutex_lock(&casted_philo->forks[0]);
-		printf("%llu\t%d\tis has taken a fork\n", get_time(), casted_philo->idx_of_philo);
+		printf("%llu\t%d\tis has taken a fork\n", get_time() - casted_philo->start_time, casted_philo->idx_of_philo);
 		pthread_mutex_lock(&casted_philo->forks[1]);
-		printf("%llu\t%d\tis has taken a fork\n", get_time(), casted_philo->idx_of_philo);
+		printf("%llu\t%d\tis has taken a fork\n", get_time() - casted_philo->start_time, casted_philo->idx_of_philo);
 		action_eat(philo);
 		pthread_mutex_unlock(&casted_philo->forks[1]);
 		pthread_mutex_unlock(&casted_philo->forks[0]);
@@ -120,7 +120,7 @@ void *routine(void *philo)
 	return (NULL);
 }
 
-void	monitor(t_philo *philo)
+void	monitor(const t_philo *philo)
 {
 	int idx;
 
@@ -130,7 +130,7 @@ void	monitor(t_philo *philo)
 		if (philo[idx].when_die <= get_time())
 		{
 			*philo[idx].is_die = TRUE;
-			printf("%llu\t%d\tdied\n", get_time(), philo[idx].idx_of_philo);
+			printf("%llu\t%d\tdied\n", get_time() - philo->start_time, philo[idx].idx_of_philo);
 			break;
 		}
 		if (++idx == philo->philo_info[NUM_OF_PHILO])
@@ -160,7 +160,7 @@ void join_pthreads(t_philo *philos)
 		pthread_join(philos[idx++].thread, NULL);
 }
 
-void	init_philos(t_philo *philos, pthread_t *threads, pthread_mutex_t *mutexs, int *parsed_input)
+void	init_philos(t_philo *philos, pthread_t *threads, pthread_mutex_t *mutexs, const int *parsed_input)
 {
 	int		idx;
 	int		*is_die;
@@ -176,15 +176,16 @@ void	init_philos(t_philo *philos, pthread_t *threads, pthread_mutex_t *mutexs, i
 			philos[idx].forks[1] = mutexs[0];
 		else
 			philos[idx].forks[1] = mutexs[idx + 1];
-		philos[idx].philo_info = parsed_input;
+		philos[idx].philo_info = (int *)parsed_input;
 		philos[idx].thread = threads[idx];
 		philos[idx].is_die = is_die;
 		philos[idx].cnt_eat = 0;
+		philos[idx].start_time = philos->start_time;
 		++idx;
 	}
 }
 
-int	make_philos(t_philo **philos, int *parsed_input)
+int	make_philos(t_philo *philos, const int parsed_input[5])
 {
 	pthread_t		*threads;
 	pthread_mutex_t	*mutexs;
@@ -192,13 +193,10 @@ int	make_philos(t_philo **philos, int *parsed_input)
 	mutexs = init_mutexs(parsed_input);
 	if (mutexs == NULL)
 		return (FALSE);
-	*philos = (t_philo *)malloc(sizeof(t_philo) * parsed_input[NUM_OF_PHILO]);
-	if (philos == NULL)
-		return (hdl_syscall("malloc"));
 	else
 	{
-		(*philos)->is_die = (int *)malloc(sizeof(int) * 1);
-		if ((*philos)->is_die == NULL)
+		philos->is_die = (int *)malloc(sizeof(int) * 1);
+		if (philos->is_die == NULL)
 			return (hdl_syscall("malloc"));
 		else
 		{
@@ -207,7 +205,7 @@ int	make_philos(t_philo **philos, int *parsed_input)
 				return (hdl_syscall("pthread"));
 		}
 	}
-	init_philos(*philos, threads, mutexs, parsed_input);
+	init_philos(philos, threads, mutexs, parsed_input);
 	free(mutexs);
 	free(threads);
 	return (SUCCESS);
@@ -222,15 +220,21 @@ int	make_philos(t_philo **philos, int *parsed_input)
 */
 int main(int ac, char **av)
 {
-	int		parsed_input[5];
-	t_philo	*philos;
+	unsigned long long	start_time;
+	int					parsed_input[5];
+	t_philo				*philos;
 
+	start_time = get_time();
 	if (ac != 5 && ac != 6)
 		return (FAILURE);
 	else
 		if (parse_philo_info(parsed_input, av) == FAILURE)
 			return (FAILURE);
-	if (make_philos(&philos, parsed_input) == FAILURE)
+	philos = (t_philo *)malloc(sizeof(t_philo) * parsed_input[NUM_OF_PHILO]);
+	if (philos == NULL)
+		return (hdl_syscall("malloc"));
+	philos->start_time = start_time;
+	if (make_philos(philos, parsed_input) == FAILURE)
 		return (FAILURE);
 	creat_pthreads(philos);
 	monitor(philos);
