@@ -12,7 +12,7 @@
 
 #include "../header/philosophers.h"
 
-int	check_philo_info(int parsed_input[5], char **av)
+int	check_philo_info(int *parsed_input, char **av)
 {
 	size_t	idx;
 	int result_flag;
@@ -52,7 +52,7 @@ int	parse_philo_info(int parsed_input[5], char **av)
 	return (check_philo_info(parsed_input, av));
 }
 
-pthread_mutex_t *init_mutexs(int parsed_input[5])
+pthread_mutex_t *init_mutexs(int *parsed_input)
 {
 	int				idx;
 	pthread_mutex_t	*result;
@@ -160,14 +160,14 @@ void join_pthreads(t_philo *philos)
 		pthread_join(philos[idx++].thread, NULL);
 }
 
-void	init_philos(t_philo *philos, pthread_t *threads, pthread_mutex_t *mutexs, int parsed_input[5])
+void	init_philos(t_philo *philos, pthread_t *threads, pthread_mutex_t *mutexs, int *parsed_input)
 {
 	int		idx;
 	int		*is_die;
 	
 	idx = 0;
 	is_die = philos->is_die;
-	is_die = FALSE;
+	*is_die = FALSE;
 	while(idx < parsed_input[NUM_OF_PHILO])
 	{
 		philos[idx].idx_of_philo = idx;
@@ -184,7 +184,7 @@ void	init_philos(t_philo *philos, pthread_t *threads, pthread_mutex_t *mutexs, i
 	}
 }
 
-int	make_philos(t_philo **philos, int parsed_input[5])
+int	make_philos(t_philo **philos, int *parsed_input)
 {
 	pthread_t		*threads;
 	pthread_mutex_t	*mutexs;
