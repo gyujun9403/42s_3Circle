@@ -3,84 +3,89 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: gyeon <gyeon@student.42seoul.kr>           +#+  +:+       +#+        */
+/*   By: gyeon <gyeon@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/11/22 16:21:51 by gyeon             #+#    #+#             */
-/*   Updated: 2021/11/29 11:22:07 by gyeon            ###   ########.fr       */
+/*   Updated: 2022/02/21 19:03:29 by gyeon            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../header/philosophers.h"
 
-int	check_philo_info(t_setting *setting, char **av)
+int	check_philo_info(int parsed_input[5], char **av)
 {
 	size_t	idx;
 	int result_flag;
 
-	idx = 0;
 	result_flag = SUCCESS;
-	while (idx < 5)
+	if (parsed_input[0] == 1 || parsed_input[0] == 0)
+		result_flag = hdl_too_few_philo();
+	else
 	{
-		if (setting->philo_info[idx] == ERR_NOT_NUM)
-			result_flag = hdl_not_legal_num(av[idx + 1]);
-		else if (setting->philo_info[idx] == ERR_OUT_OF_INT)
-			result_flag = hdl_out_of_int(av[idx + 1]);
-		++idx;
+		idx = 0;
+		while (idx < 5)
+		{
+			if (parsed_input[idx] == ERR_NOT_NUM)
+				result_flag = hdl_not_legal_num(av[idx + 1]);
+			else if (parsed_input[idx] == ERR_OUT_OF_INT)
+				result_flag = hdl_out_of_int(av[idx + 1]);
+			++idx;
+		}
 	}
 	return (result_flag);
 }
 
-int	set_philo_info(t_setting *setting, char **av)
+int	parse_philo_info(int parsed_input[5], char **av)
 {
 	size_t idx;
 
 	idx = 0;
 	while (idx < 4)
 	{
-		setting->philo_info[idx] = philo_atoi(av[idx + 1]);
+		parsed_input[idx] = philo_atoi(av[idx + 1]);
 		++idx;
 	}
 	if (av[5] != NULL)
-		setting->philo_info[4] = philo_atoi(av[5]);
+		parsed_input[4] = philo_atoi(av[5]);
 	else
-		setting->philo_info[4] = INF;
-	return (check_philo_info(setting, av));
+		parsed_input[4] = INF;
+	return (check_philo_info(parsed_input, av));
 }
 
-int init_mutexs(t_setting *setting)
+pthread_mutex_t *init_mutexs(int parsed_input[5])
 {
-	int idx;
+	int				idx;
+	pthread_mutex_t	*result;
 
 	idx = 0;
-	setting->mutexs = (pthread_mutex_t *)malloc
-			(sizeof(pthread_mutex_t) * setting->philo_info[0]);
-	if (setting->mutexs == NULL)
+	result = (pthread_mutex_t *)malloc
+			(sizeof(pthread_mutex_t) * parsed_input[NUM_OF_PHILO]);
+	if (result == NULL)
 	{
 		hdl_syscall("malloc");
-		return (FAILURE);
+		return (NULL);
 	}
-	while (idx < setting->philo_info[0])
+	while (idx < parsed_input[NUM_OF_PHILO])
 	{
-		if (pthread_mutex_init(&setting->mutexs[idx], NULL) != SUCCESS) {
-			hdl_syscall("mutex_init");
+		if (pthread_mutex_init(&result[idx], NULL) != SUCCESS) {
+			hdl_syscall("pthread_mutex_init");
 			while (idx > 0)
-				pthread_mutex_destroy(&setting->mutexs[--idx]);
-			free(setting->mutexs);
-			return (FAILURE);
+				pthread_mutex_destroy(&result[--idx]);
+			free(result);
+			return (NULL);
 		}
 		++idx;
 	}
-	return (SUCCESS);
+	return (result);
 }
 
-void destroy_mutexs(t_setting *setting)
+void destroy_mutexs(t_philo *philos)
 {
 	int	idx;
 
 	idx = 0;
-	while (idx < setting->philo_info[0])
-		pthread_mutex_destroy(&setting->mutexs[idx++]);
-	free(setting->mutexs);
+	while (idx < philos->philo_info[NUM_OF_PHILO])
+		pthread_mutex_destroy(&philos[idx++].forks[0]);
 }
 
 /*
@@ -110,8 +115,9 @@ void *routine(void *philo)
 		action_eat(philo);
 		pthread_mutex_unlock(&casted_philo->forks[1]);
 		pthread_mutex_unlock(&casted_philo->forks[0]);
+		action_sleep(philo);
 	}
-	printf("%llu\t%d\tis END\n", get_time(), casted_philo->idx_of_philo);
+	return (NULL);
 }
 
 void	monitor(t_philo *philo)
@@ -132,59 +138,80 @@ void	monitor(t_philo *philo)
 	}
 }
 
-int creat_pthreads(t_setting *setting)
+int creat_pthreads(t_philo *philos)
 {
 	int			idx;
-	pthread_t	*threads;
-	t_philo 	*philo;
-	int 		*is_die;
 
-	threads = (pthread_t *)malloc(sizeof(pthread_t) * setting->philo_info[0]);
-	if (threads == NULL)
-		return (hdl_syscall("pthread"));
-
-	philo = (t_philo *)malloc(sizeof(t_philo) * setting->philo_info[0]);
-	if (philo == NULL)
-		return (hdl_syscall("malloc"));
-	is_die = (int *)malloc(sizeof(int) * 1);
-	if (is_die == NULL)
-		return (hdl_syscall("malloc"));
-	*is_die = FALSE;
 	idx = 0;
-	while(idx < setting->philo_info[0])
+	while(idx < philos->philo_info[NUM_OF_PHILO])
 	{
-		philo[idx].idx_of_philo = idx;
-		philo[idx].forks[0] = setting->mutexs[idx];
-		if (idx + 1 == setting->philo_info[0])
-			philo[idx].forks[1] = setting->mutexs[0];
-		else
-			philo[idx].forks[1] = setting->mutexs[idx + 1];
-		philo[idx].philo_info = setting->philo_info;
-		philo[idx].thread = setting->thread[idx];
-		philo[idx].is_die = is_die;
-		philo[idx].cnt_eat = 0;
+		pthread_create(&philos[idx].thread, NULL, routine, &philos[idx]);
 		++idx;
 	}
-	idx = 0;
-	while(idx < setting->philo_info[0])
-	{
-		pthread_create(&threads[idx], NULL, routine, &philo[idx]);
-		++idx;
-	}
-	monitor(philo);
 	return (SUCCESS);
 }
 
-void join_pthreads(t_setting *setting)
+void join_pthreads(t_philo *philos)
 {
 	int idx;
 
 	idx = 0;
-	while(idx < setting->philo_info[0])
-		pthread_join(setting->thread[idx++], NULL);
+	while(idx < philos->philo_info[NUM_OF_PHILO])
+		pthread_join(philos[idx++].thread, NULL);
 }
 
+void	init_philos(t_philo *philos, pthread_t *threads, pthread_mutex_t *mutexs, int parsed_input[5])
+{
+	int		idx;
+	int		*is_die;
+	
+	idx = 0;
+	is_die = philos->is_die;
+	is_die = FALSE;
+	while(idx < parsed_input[NUM_OF_PHILO])
+	{
+		philos[idx].idx_of_philo = idx;
+		philos[idx].forks[0] = mutexs[idx];
+		if (idx + 1 == parsed_input[NUM_OF_PHILO])
+			philos[idx].forks[1] = mutexs[0];
+		else
+			philos[idx].forks[1] = mutexs[idx + 1];
+		philos[idx].philo_info = parsed_input;
+		philos[idx].thread = threads[idx];
+		philos[idx].is_die = is_die;
+		philos[idx].cnt_eat = 0;
+		++idx;
+	}
+}
 
+int	make_philos(t_philo **philos, int parsed_input[5])
+{
+	pthread_t		*threads;
+	pthread_mutex_t	*mutexs;
+
+	mutexs = init_mutexs(parsed_input);
+	if (mutexs == NULL)
+		return (FALSE);
+	*philos = (t_philo *)malloc(sizeof(t_philo) * parsed_input[NUM_OF_PHILO]);
+	if (philos == NULL)
+		return (hdl_syscall("malloc"));
+	else
+	{
+		(*philos)->is_die = (int *)malloc(sizeof(int) * 1);
+		if ((*philos)->is_die == NULL)
+			return (hdl_syscall("malloc"));
+		else
+		{
+			threads = (pthread_t *)malloc(sizeof(pthread_t) * parsed_input[NUM_OF_PHILO]);
+			if (threads == NULL)
+				return (hdl_syscall("pthread"));
+		}
+	}
+	init_philos(*philos, threads, mutexs, parsed_input);
+	free(mutexs);
+	free(threads);
+	return (SUCCESS);
+}
 
 /*
 ** philo_info[0] : number_of_philosophers
@@ -195,18 +222,19 @@ void join_pthreads(t_setting *setting)
 */
 int main(int ac, char **av)
 {
-	t_setting	setting;
+	int		parsed_input[5];
+	t_philo	*philos;
 
 	if (ac != 5 && ac != 6)
 		return (FAILURE);
 	else
-		if (set_philo_info(&setting, av) == FAILURE)
+		if (parse_philo_info(parsed_input, av) == FAILURE)
 			return (FAILURE);
-	if (init_mutexs(&setting) == FAILURE)
+	if (make_philos(&philos, parsed_input) == FAILURE)
 		return (FAILURE);
-	creat_pthreads(&setting);
-	join_pthreads(&setting);
-	destroy_mutexs(&setting);
-
+	creat_pthreads(philos);
+	monitor(philos);
+	join_pthreads(philos);
+	destroy_mutexs(philos);
 	return (SUCCESS);
 }

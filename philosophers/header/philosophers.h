@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   philosophers.h                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: gyeon <gyeon@student.42seoul.kr>           +#+  +:+       +#+        */
+/*   By: gyeon <gyeon@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/11/22 18:00:22 by gyeon             #+#    #+#             */
-/*   Updated: 2021/11/29 11:22:11 by gyeon            ###   ########.fr       */
+/*   Updated: 2022/02/21 19:01:32 by gyeon            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,8 +38,8 @@
 typedef struct s_setting
 {
 	int				philo_info[5];
-	pthread_mutex_t	*mutexs;
-	pthread_t 		*thread;
+		pthread_mutex_t	*mutexs;
+		pthread_t 		*thread;
 } t_setting;
 
 typedef struct s_philo
@@ -60,6 +60,7 @@ void action_sleep(t_philo *philo);
 int	hdl_not_legal_num(char *str);
 int	hdl_out_of_int(char *str);
 int	hdl_syscall(char *msg);
+int	hdl_too_few_philo(void);
 
 //utils
 int philo_atoi(char *str);
