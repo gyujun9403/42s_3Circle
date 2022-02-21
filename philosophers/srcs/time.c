@@ -31,8 +31,8 @@ void	philo_msleep(int msec, t_philo *philo)
 	while (*(philo->is_die) == FALSE)
 	{
 		time_now = get_time();
-		if  (time_now >= time_end)
-			break;
+		if (time_now >= time_end)
+			break ;
 		usleep(500);
 	}
 }

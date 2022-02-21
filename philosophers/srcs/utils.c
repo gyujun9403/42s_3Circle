@@ -12,7 +12,7 @@
 
 #include "../header/philosophers.h"
 
-int philo_atoi(char *str)
+int	philo_atoi(char *str)
 {
 	size_t			idx;
 	unsigned int	result;
@@ -34,7 +34,7 @@ int philo_atoi(char *str)
 	return (result);
 }
 
-size_t philo_strlen(const char *str)
+size_t	philo_strlen(const char *str)
 {
 	size_t	i;
 
@@ -42,14 +42,4 @@ size_t philo_strlen(const char *str)
 	while (*(str + i) != '\0')
 		i++;
 	return (i);
-}
-
-void philo_free_sstr(char **sstr, int size_str)
-{
-	int idx;
-
-	idx = 0;
-	while (idx < size_str)
-		free(sstr[idx++]);
-	free(sstr);
 }

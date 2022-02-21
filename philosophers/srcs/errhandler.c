@@ -21,20 +21,26 @@ int	hdl_syscall(char *msg)
 
 int	hdl_too_few_philo(void)
 {
-	write(2, "Too few philosophers had been set\nSet philosophers more than 2.\n", 64);
+	write(2,
+		  "Too few philosophers had been set\nSet philosophers more than 2.\n",
+		  64);
 	return (FAILURE);
 }
 
 int	hdl_not_legal_num(char *str)
 {
 	write(2, str, philo_strlen(str));
-	write(2, " is illegal input\nUse positive integer numbers.\n", 48);
+	write(2,
+		  " is illegal input\nUse positive integer numbers.\n",
+		  48);
 	return (FAILURE);
 }
 
 int	hdl_out_of_int(char *str)
 {
 	write(2, str, philo_strlen(str));
-	write(2, " is out of INT area\nUse positive integer numbers.\n", 50);
+	write(2,
+		  " is out of INT area\nUse positive integer numbers.\n",
+		  50);
 	return (FAILURE);
 }

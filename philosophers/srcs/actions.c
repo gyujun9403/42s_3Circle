@@ -12,17 +12,19 @@
 
 #include "../header/philosophers.h"
 
-void action_eat(t_philo *philo)
+void	action_eat(t_philo *philo)
 {
-	printf("%llu\t%d\tis eating\n", get_time() - philo->start_time, philo->idx_of_philo);
-	philo_msleep(philo->philo_info[TIME_TO_EAT], philo);
-	philo->when_die = get_time() + philo->philo_info[TIME_TO_DIE];
-	if (philo->philo_info[NUM_OF_EAT] > 0)
+	printf("%llu %d is eating\n",
+		   get_time() - philo->start_time, philo->idx_of_philo);
+	philo_msleep(philo->info[TIME_TO_EAT], philo);
+	philo->when_die = get_time() + philo->info[TIME_TO_DIE];
+	if (philo->info[NUM_OF_EAT] > 0)
 		++(philo->cnt_eat);
 }
 
-void action_sleep(t_philo *philo)
+void	action_sleep(t_philo *philo)
 {
-	printf("%llu\t%d\tis sleeping\n", get_time() - philo->start_time, philo->idx_of_philo);
-	philo_msleep(philo->philo_info[TIME_TO_SLEEP], philo);
+	printf("%llu %d is sleeping\n",
+		   get_time() - philo->start_time, philo->idx_of_philo);
+	philo_msleep(philo->info[TIME_TO_SLEEP], philo);
 }
