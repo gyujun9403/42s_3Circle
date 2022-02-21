@@ -6,7 +6,7 @@
 /*   By: gyeon <gyeon@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/11/22 16:21:51 by gyeon             #+#    #+#             */
-/*   Updated: 2022/02/21 19:38:00 by gyeon            ###   ########.fr       */
+/*   Updated: 2022/02/21 20:44:44 by gyeon            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -103,18 +103,18 @@ void *routine(void *philo)
 
 	casted_philo = (t_philo *)philo;
 	// 죽는시간 체크하고
-	casted_philo->when_die = get_time() + casted_philo->philo_info[TIME_TO_DIE];
+	casted_philo->when_die = casted_philo->start_time + casted_philo->philo_info[TIME_TO_DIE];
 	// 죽거나, 밥을 다 먹을때까지 무한루프
 	while (*(casted_philo->is_die) == FALSE)
 	{
 		printf("%llu\t%d\tis thinking\n", get_time() - casted_philo->start_time, casted_philo->idx_of_philo);
-		pthread_mutex_lock(&casted_philo->forks[0]);
+		pthread_mutex_lock(&(casted_philo->forks[0]));
 		printf("%llu\t%d\tis has taken a fork\n", get_time() - casted_philo->start_time, casted_philo->idx_of_philo);
-		pthread_mutex_lock(&casted_philo->forks[1]);
+		pthread_mutex_lock(&(casted_philo->forks[1]));
 		printf("%llu\t%d\tis has taken a fork\n", get_time() - casted_philo->start_time, casted_philo->idx_of_philo);
 		action_eat(philo);
-		pthread_mutex_unlock(&casted_philo->forks[1]);
-		pthread_mutex_unlock(&casted_philo->forks[0]);
+		pthread_mutex_unlock(&(casted_philo->forks[1]));
+		pthread_mutex_unlock(&(casted_philo->forks[0]));
 		action_sleep(philo);
 	}
 	return (NULL);
@@ -123,18 +123,32 @@ void *routine(void *philo)
 void	monitor(const t_philo *philo)
 {
 	int idx;
+	int	cnt_full;
 
 	idx = 0;
+	cnt_full = 0;
 	while (1)
 	{
 		if (philo[idx].when_die <= get_time())
 		{
-			*philo[idx].is_die = TRUE;
+			*(philo->is_die) = TRUE;
 			printf("%llu\t%d\tdied\n", get_time() - philo->start_time, philo[idx].idx_of_philo);
 			break;
 		}
+		else if (philo->philo_info[NUM_OF_EAT] != INF && philo[idx].cnt_eat >= philo->philo_info[NUM_OF_EAT])
+			++cnt_full;
 		if (++idx == philo->philo_info[NUM_OF_PHILO])
+		{
+			if (cnt_full == idx)
+			{
+				*(philo->is_die) = TRUE;
+				printf("EAT DONE\n");
+				break ;
+			}
+			else
+				cnt_full = 0;
 			idx = 0;
+		}
 	}
 }
 
@@ -163,11 +177,9 @@ void join_pthreads(t_philo *philos)
 void	init_philos(t_philo *philos, pthread_t *threads, pthread_mutex_t *mutexs, const int *parsed_input)
 {
 	int		idx;
-	int		*is_die;
 	
 	idx = 0;
-	is_die = philos->is_die;
-	*is_die = FALSE;
+	*(philos->is_die) = FALSE;
 	while(idx < parsed_input[NUM_OF_PHILO])
 	{
 		philos[idx].idx_of_philo = idx;
@@ -178,7 +190,7 @@ void	init_philos(t_philo *philos, pthread_t *threads, pthread_mutex_t *mutexs, c
 			philos[idx].forks[1] = mutexs[idx + 1];
 		philos[idx].philo_info = (int *)parsed_input;
 		philos[idx].thread = threads[idx];
-		philos[idx].is_die = is_die;
+		philos[idx].is_die = philos->is_die;
 		philos[idx].cnt_eat = 0;
 		philos[idx].start_time = philos->start_time;
 		++idx;

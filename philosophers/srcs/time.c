@@ -6,7 +6,7 @@
 /*   By: gyeon <gyeon@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/21 16:50:00 by gyeon             #+#    #+#             */
-/*   Updated: 2022/02/21 16:50:01 by gyeon            ###   ########.fr       */
+/*   Updated: 2022/02/21 20:08:07 by gyeon            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,7 +28,7 @@ void	philo_msleep(int msec, t_philo *philo)
 	unsigned long long	time_now;
 
 	time_end = get_time() + msec;
-	while (*philo->is_die == FALSE)
+	while (*(philo->is_die) == FALSE)
 	{
 		time_now = get_time();
 		if  (time_now >= time_end)
