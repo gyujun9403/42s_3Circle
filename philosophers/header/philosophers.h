@@ -22,15 +22,15 @@
 
 # define FALSE			0
 # define TRUE			1
-# define	SUCCESS			0
-# define	FAILURE			1
-# define ERR_NOT_NUM		-1
+# define SUCCESS		0
+# define FAILURE		1
+# define ERR_NOT_NUM	-1
 # define ERR_OUT_OF_INT	-2
-# define INF				-10
+# define INF			-10
 
 # define NUM_OF_PHILO	0
-# define TIME_TO_DIE		1
-# define TIME_TO_EAT		2
+# define TIME_TO_DIE	1
+# define TIME_TO_EAT	2
 # define TIME_TO_SLEEP	3
 # define NUM_OF_EAT		4
 # define INT_MAX 2147483647
