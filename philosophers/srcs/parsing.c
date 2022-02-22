@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   parsing.c                                          :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: gyeon <gyeon@student.42.fr>                +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2022/02/22 12:47:40 by gyeon             #+#    #+#             */
+/*   Updated: 2022/02/22 12:48:15 by gyeon            ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "../header/philosophers.h"
 
 int	check_info(const int parsed_input[5], char **av)
@@ -24,11 +36,11 @@ int	check_info(const int parsed_input[5], char **av)
 }
 
 /*
-** info[0] : number_of_philosophers
-** info[1] : time_to_die
-** info[2] : time_to_eat
-** info[3] : time_to_sleep
-** info[4] : number_of_times_each_philosopher_must_eat
+** parsed_input[0] : number_of_philosophers
+** parsed_input[1] : time_to_die
+** parsed_input[2] : time_to_eat
+** parsed_input[3] : time_to_sleep
+** parsed_input[4] : number_of_times_each_philosopher_must_eat
 */
 int	parse_info(int parsed_input[5], char **av)
 {

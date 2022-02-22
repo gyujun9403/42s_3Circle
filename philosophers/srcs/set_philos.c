@@ -1,13 +1,11 @@
 #include "../header/philosophers.h"
 
 /*
-**				  left/right
-** thread[0]	: mutex[0] / mutex[1]
-** thread[1]	: mutex[1] / mutex[2]
-** thread[2]	: mutex[2] / mutex[3]
+**					   left / right
+** thread[0]	: mutex[0]	/ mutex[1]
+** thread[1]	: mutex[1]	/ mutex[2]
+** thread[2]	: mutex[2]	/ mutex[3]
 ** thread[n-1]	: mutex[n-1] / mutex[0]
- * 해당 함수가 특정 스레드로 돌아가고 있는지 어떻게 알지??
- * -> 매개변수도 다 넘길게 아니라, 사용할 스레드/뮤텍스만 담을 구조체ㅐ를 만들어서 보내기.
 */
 void	init_philos(t_philo *philos, pthread_t *threads,
 	 pthread_mutex_t *mutexs, const int *parsed_input)
@@ -58,4 +56,10 @@ int	set_philos(t_philo *philos, const int parsed_input[5])
 	free(mutexs);
 	free(threads);
 	return (SUCCESS);
+}
+
+void	free_philos(t_philo *philos)
+{
+	free(philos->is_die);
+	free(philos);
 }

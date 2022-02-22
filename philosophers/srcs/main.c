@@ -6,7 +6,7 @@
 /*   By: gyeon <gyeon@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/11/22 16:21:51 by gyeon             #+#    #+#             */
-/*   Updated: 2022/02/21 20:44:44 by gyeon            ###   ########.fr       */
+/*   Updated: 2022/02/22 13:08:57 by gyeon            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,5 +62,6 @@ int	main(int ac, char **av)
 	monitor(philos);
 	join_pthreads(philos);
 	destroy_mutexs(philos);
+	free_philos(philos);
 	return (SUCCESS);
 }

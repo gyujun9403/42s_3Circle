@@ -6,7 +6,7 @@
 /*   By: gyeon <gyeon@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/11/22 18:00:22 by gyeon             #+#    #+#             */
-/*   Updated: 2022/02/21 20:40:42 by gyeon            ###   ########.fr       */
+/*   Updated: 2022/02/22 13:08:31 by gyeon            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,7 +28,7 @@
 # define ERR_OUT_OF_INT	-2
 # define INF			-10
 
-# define NUM_OF_PHILO	0
+# define NUM_OF_PHILO	0 
 # define TIME_TO_DIE	1
 # define TIME_TO_EAT	2
 # define TIME_TO_SLEEP	3
@@ -75,6 +75,7 @@ int					set_philos(t_philo *philos, const int parsed_input[5]);
 int					philo_atoi(char *str);
 size_t				philo_strlen(const char *str);
 void				philo_free_sstr(char **sstr, int size_str);
+void				free_philos(t_philo *philos);
 
 // time
 void				philo_msleep(int msec, t_philo *philo);
