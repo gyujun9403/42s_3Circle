@@ -6,7 +6,7 @@
 /*   By: gyeon <gyeon@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/11/22 16:21:51 by gyeon             #+#    #+#             */
-/*   Updated: 2022/02/23 15:47:14 by gyeon            ###   ########.fr       */
+/*   Updated: 2022/02/24 20:40:27 by gyeon            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,11 +21,10 @@ void	monitor(const t_philo *philo)
 	cnt_full = 0;
 	while (*(philo->is_die) == FALSE)
 	{
-		if (philo[idx].when_die <= get_time())
+		if (philo[idx].when_die <= get_time(FALSE))
 		{
 			*(philo->is_die) = TRUE;
-			printf("%llu %d died\n",
-				   get_time() - philo->start_time, philo[idx].idx_of_philo);
+			mutex_prt_die(philo->idx_of_philo, philo->anounce);
 		}
 		else if (philo->info[NUM_OF_EAT] != INF
 			&& philo[idx].cnt_eat >= philo->info[NUM_OF_EAT])
@@ -37,7 +36,7 @@ void	monitor(const t_philo *philo)
 			cnt_full = 0;
 			idx = 0;
 		}
-		sleep(500);
+		usleep(50);
 	}
 }
 
@@ -47,7 +46,7 @@ int	main(int ac, char **av)
 	int					parsed_input[5];
 	t_philo				*philos;
 
-	start_time = get_time();
+	start_time = get_time(TRUE);
 	if (ac != 5 && ac != 6)
 		return (FAILURE);
 	else
@@ -61,7 +60,7 @@ int	main(int ac, char **av)
 		return (FAILURE);
 	creat_pthreads(philos);
 	monitor(philos);
-	join_pthreads(philos);
+	detach_pthreads(philos);
 	destroy_mutexs(philos);
 	free_philos(philos);
 	return (SUCCESS);

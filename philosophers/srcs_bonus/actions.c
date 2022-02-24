@@ -6,7 +6,7 @@
 /*   By: gyeon <gyeon@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/21 16:47:47 by gyeon             #+#    #+#             */
-/*   Updated: 2022/02/23 16:24:58 by gyeon            ###   ########.fr       */
+/*   Updated: 2022/02/24 17:36:17 by gyeon            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,15 +14,16 @@
 
 void	action_eat(t_philo *philo)
 {
-	printf("%llu %d is eating\n", get_elapsed_time(), philo->idx_of_philo);
-	philo_msleep(philo->info[TIME_TO_EAT], philo);
+	sem_prt_eat(philo->idx_of_philo, philo->anounce);
+	philo_msleep(philo->info[TIME_TO_EAT]);
 	philo->when_die = get_time(FALSE) + philo->info[TIME_TO_DIE];
-	//if (philo->info[NUM_OF_EAT] > 0)
-		++(philo->cnt_eat);
+	if (philo->info[NUM_OF_EAT] != INF
+		&& ++(philo->cnt_eat) == philo->info[NUM_OF_EAT])
+		sem_post(philo->full);
 }
 
 void	action_sleep(t_philo *philo)
 {
-	printf("%llu %d is sleeping\n",get_elapsed_time(), philo->idx_of_philo);
-	philo_msleep(philo->info[TIME_TO_SLEEP], philo);
+	sem_prt_sleep(philo->idx_of_philo, philo->anounce);
+	philo_msleep(philo->info[TIME_TO_SLEEP]);
 }

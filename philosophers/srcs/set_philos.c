@@ -13,6 +13,7 @@ void	init_philos(t_philo *philos, pthread_t *threads,
 	int		idx;
 
 	idx = 0;
+	pthread_mutex_init(philos->anounce, NULL);
 	*(philos->is_die) = FALSE;
 	while (idx < parsed_input[NUM_OF_PHILO])
 	{
@@ -24,9 +25,11 @@ void	init_philos(t_philo *philos, pthread_t *threads,
 			philos[idx].forks[1] = mutexs[idx + 1];
 		philos[idx].info = (int *)parsed_input;
 		philos[idx].thread = threads[idx];
+		philos[idx].when_die = get_time(TRUE) + philos[idx].info[TIME_TO_DIE];
 		philos[idx].is_die = philos->is_die;
 		philos[idx].cnt_eat = 0;
 		philos[idx].start_time = philos->start_time;
+		philos[idx].anounce = philos->anounce;
 		++idx;
 	}
 }
@@ -42,15 +45,12 @@ int	set_philos(t_philo *philos, const int parsed_input[5])
 	else
 	{
 		philos->is_die = (int *)malloc(sizeof(int) * 1);
-		if (philos->is_die == NULL)
+		philos->anounce = (pthread_mutex_t *)malloc(sizeof(pthread_t));
+		threads = (pthread_t *)
+			malloc(sizeof(pthread_t) * parsed_input[NUM_OF_PHILO]);
+		if (philos->is_die == NULL
+			|| philos->anounce == NULL || threads == NULL)
 			return (hdl_syscall("malloc"));
-		else
-		{
-			threads = (pthread_t *)
-				malloc(sizeof(pthread_t) * parsed_input[NUM_OF_PHILO]);
-			if (threads == NULL)
-				return (hdl_syscall("pthread"));
-		}
 	}
 	init_philos(philos, threads, mutexs, parsed_input);
 	free(mutexs);

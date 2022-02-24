@@ -6,7 +6,7 @@
 /*   By: gyeon <gyeon@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/11/22 16:21:51 by gyeon             #+#    #+#             */
-/*   Updated: 2022/02/23 18:18:48 by gyeon            ###   ########.fr       */
+/*   Updated: 2022/02/24 20:21:03 by gyeon            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,7 @@
 void	*monitor_full(void *in)
 {
 	t_philo	*philo;
-	int	idx;
+	int		idx;
 
 	idx = 0;
 	philo = (t_philo *)in;
@@ -26,12 +26,30 @@ void	*monitor_full(void *in)
 	return (NULL);
 }
 
+void	fork_philos(t_philo *philo)
+{
+	int	idx;
+	int	num_of_philo;
+
+	idx = 0;
+	num_of_philo = philo->info[NUM_OF_PHILO];
+	while (idx < num_of_philo)
+	{
+		philo->idx_of_philo = idx;
+		philo->pids[idx] = fork();
+		if (philo->pids[idx] == 0)
+			routine(philo);
+		++idx;
+	}
+}
+
 int	main(int ac, char **av)
 {
 	int		idx;
 	int		parsed_input[5];
 	t_philo	*philo;
 
+	idx = 0;
 	get_time(TRUE);
 	if (ac != 5 && ac != 6)
 		return (FAILURE);
@@ -41,19 +59,10 @@ int	main(int ac, char **av)
 	philo = set_philo(parsed_input);
 	if (philo == NULL)
 		return (FAILURE);
-	idx = 0;
-	while (idx < parsed_input[NUM_OF_PHILO])
-	{
-		philo->idx_of_philo = idx;
-		philo->pids[idx] = fork();
-		if (philo->pids[idx] == 0)	//자식프로세스
-			routine(philo);
-		++idx;
-	}
+	fork_philos(philo);
 	if (parsed_input[NUM_OF_EAT] != INF)
-		pthread_create(philo->thread, NULL, monitor_full, &philo);
+		pthread_create(philo->thread, NULL, monitor_full, philo);
 	sem_wait(philo->die);
-	idx = 0;
 	while (idx < parsed_input[NUM_OF_PHILO])
 		kill(philo->pids[idx++], SIGINT);
 	if (parsed_input[NUM_OF_EAT] != INF)

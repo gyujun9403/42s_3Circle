@@ -6,7 +6,7 @@
 /*   By: gyeon <gyeon@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/23 13:48:16 by gyeon             #+#    #+#             */
-/*   Updated: 2022/02/23 17:18:14 by gyeon            ###   ########.fr       */
+/*   Updated: 2022/02/24 17:40:48 by gyeon            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,8 +42,9 @@ void	*ft_calloc(size_t count, size_t size)
 
 sem_t	*ft_sem_open(const char *name, const unsigned int value)
 {
-	sem_t	*result = NULL;
+	sem_t	*result;
 
+	result = NULL;
 	sem_unlink(name);
 	result = sem_open(name, O_CREAT | O_EXCL, 0644, value);
 	if (result == SEM_FAILED)

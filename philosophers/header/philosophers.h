@@ -6,7 +6,7 @@
 /*   By: gyeon <gyeon@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/11/22 18:00:22 by gyeon             #+#    #+#             */
-/*   Updated: 2022/02/22 13:08:31 by gyeon            ###   ########.fr       */
+/*   Updated: 2022/02/24 20:40:19 by gyeon            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,6 +41,7 @@ typedef struct s_philo
 	int					idx_of_philo;
 	int					*info;
 	pthread_mutex_t		forks[2];
+	pthread_mutex_t		*anounce;
 	pthread_t			thread;
 	unsigned long long	start_time;
 	unsigned long long	when_die;
@@ -60,13 +61,20 @@ int					hdl_too_few_philo(void);
 // parsing
 int					parse_info(int parsed_input[5], char **av);
 
+// mutex_print
+void				mutex_prt_eat(const int num, pthread_mutex_t *mutex);
+void				mutex_prt_sleep(const int num, pthread_mutex_t *mutex);
+void				mutex_prt_think(const int num, pthread_mutex_t *mutex);
+void				mutex_prt_fork(const int num, pthread_mutex_t *mutex);
+void				mutex_prt_die(const int num, pthread_mutex_t *mutex);
+
 // mutexs
 pthread_mutex_t		*init_mutexs(const int parsed_input[5]);
 void				destroy_mutexs(t_philo *philos);
 
 // pthreads
 int					creat_pthreads(t_philo *philos);
-void				join_pthreads(t_philo *philos);
+void				detach_pthreads(t_philo *philos);
 
 // set_philos
 int					set_philos(t_philo *philos, const int parsed_input[5]);
@@ -79,6 +87,7 @@ void				free_philos(t_philo *philos);
 
 // time
 void				philo_msleep(int msec, t_philo *philo);
-unsigned long long	get_time(void);
+unsigned long long	get_time(int start_time);
+unsigned long long	get_elapsed_time(void);
 
 #endif

@@ -6,7 +6,7 @@
 /*   By: gyeon <gyeon@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/22 12:48:21 by gyeon             #+#    #+#             */
-/*   Updated: 2022/02/22 12:48:22 by gyeon            ###   ########.fr       */
+/*   Updated: 2022/02/24 20:40:07 by gyeon            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,16 +21,11 @@ void	*routine(void *philo)
 		= cast_philo->start_time + cast_philo->info[TIME_TO_DIE];
 	while (*(cast_philo->is_die) == FALSE)
 	{
-		printf("%llu %d is thinking\n", get_time() - cast_philo->start_time,
-			   cast_philo->idx_of_philo);
+		mutex_prt_think(cast_philo->idx_of_philo, cast_philo->anounce);
 		pthread_mutex_lock(&(cast_philo->forks[0]));
-		printf("%llu %d is has taken a fork\n",
-			   get_time() - cast_philo->start_time,
-			   cast_philo->idx_of_philo);
+		mutex_prt_fork(cast_philo->idx_of_philo, cast_philo->anounce);
 		pthread_mutex_lock(&(cast_philo->forks[1]));
-		printf("%llu %d is has taken a fork\n",
-			   get_time() - cast_philo->start_time,
-			   cast_philo->idx_of_philo);
+		mutex_prt_fork(cast_philo->idx_of_philo, cast_philo->anounce);
 		action_eat(philo);
 		pthread_mutex_unlock(&(cast_philo->forks[1]));
 		pthread_mutex_unlock(&(cast_philo->forks[0]));
@@ -52,11 +47,11 @@ int	creat_pthreads(t_philo *philos)
 	return (SUCCESS);
 }
 
-void	join_pthreads(t_philo *philos)
+void	detach_pthreads(t_philo *philos)
 {
 	int	idx;
 
 	idx = 0;
 	while (idx < philos->info[NUM_OF_PHILO])
-		pthread_join(philos[idx++].thread, NULL);
+		pthread_detach(philos[idx++].thread);
 }

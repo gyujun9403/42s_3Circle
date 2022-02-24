@@ -6,7 +6,7 @@
 /*   By: gyeon <gyeon@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/21 16:50:00 by gyeon             #+#    #+#             */
-/*   Updated: 2022/02/23 17:01:23 by gyeon            ###   ########.fr       */
+/*   Updated: 2022/02/24 14:33:54 by gyeon            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,7 +38,7 @@ void	philo_msleep(int msec)
 	{
 		if (get_time(FALSE) >= time_end)
 			break ;
-		usleep(500);
+		usleep(700);
 	}
 }
 
