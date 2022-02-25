@@ -6,7 +6,7 @@
 /*   By: gyeon <gyeon@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/23 16:26:27 by gyeon             #+#    #+#             */
-/*   Updated: 2022/02/24 17:40:33 by gyeon            ###   ########.fr       */
+/*   Updated: 2022/02/25 15:56:16 by gyeon            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -71,5 +71,6 @@ void	free_philo(t_philo *philo)
 	sem_unlink("anounce");
 	sem_close(philo->anounce);
 	free(philo->thread);
+	free(philo->pids);
 	free(philo);
 }

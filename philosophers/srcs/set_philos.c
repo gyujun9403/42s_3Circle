@@ -60,6 +60,7 @@ int	set_philos(t_philo *philos, const int parsed_input[5])
 
 void	free_philos(t_philo *philos)
 {
+	free(philos->anounce);
 	free(philos->is_die);
 	free(philos);
 }

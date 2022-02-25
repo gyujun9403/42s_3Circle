@@ -6,7 +6,7 @@
 /*   By: gyeon <gyeon@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/11/22 16:21:51 by gyeon             #+#    #+#             */
-/*   Updated: 2022/02/24 20:21:03 by gyeon            ###   ########.fr       */
+/*   Updated: 2022/02/25 15:58:17 by gyeon            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,6 +21,7 @@ void	*monitor_full(void *in)
 	philo = (t_philo *)in;
 	while (idx++ < philo->info[NUM_OF_PHILO])
 		sem_wait(philo->full);
+	sem_wait(philo->anounce);
 	sem_post(philo->die);
 	idx = 0;
 	return (NULL);
