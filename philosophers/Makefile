@@ -17,8 +17,11 @@ FLAGS = -Wall -Wextra -Werror
 DIR_HEADER = ./header/
 DIR_SRCS = ./srcs/
 DIR_SRCS_BONUS = ./srcs_bonus/
-SRCS = main.c utils.c errhandler.c actions.c time.c parsing.c pthreads.c mutexs.c set_philos.c mutex_print.c
-SRCS_BONUS = main.c utils.c errhandler.c actions.c time.c parsing.c routine.c syscall.c set_philo.c sem_print.c
+SRCS = main.c utils.c errhandler.c actions.c time.c \
+	parsing.c pthreads.c mutexs.c set_philos.c mutex_print.c
+SRCS_BONUS = main_bonus.c utils_bonus.c errhandler_bonus.c \
+	actions_bonus.c time_bonus.c parsing_bonus.c routine_bonus.c \
+	syscall_bonus.c set_philo_bonus.c sem_print_bonus.c
 OBJS = $(SRCS:.c=.o)
 OBJS_BONUS = $(SRCS_BONUS:.c=.o)
 
