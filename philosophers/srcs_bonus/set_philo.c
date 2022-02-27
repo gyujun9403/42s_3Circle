@@ -6,7 +6,7 @@
 /*   By: gyeon <gyeon@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/23 16:26:27 by gyeon             #+#    #+#             */
-/*   Updated: 2022/02/25 15:56:16 by gyeon            ###   ########.fr       */
+/*   Updated: 2022/02/27 16:27:05 by gyeon            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -67,10 +67,13 @@ void	free_philo(t_philo *philo)
 	sem_unlink("die");
 	sem_close(philo->die);
 	sem_unlink("die_check");
- 	sem_close(philo->die_check);
+	sem_close(philo->die_check);
 	post_sem(philo->full, philo->info[NUM_OF_PHILO]);
 	sem_unlink("full");
 	sem_close(philo->full);
+	post_sem(philo->restriction, philo->info[NUM_OF_PHILO] - 1);
+	sem_unlink("restriction");
+	sem_close(philo->restriction);
 	sem_unlink("anounce");
 	sem_close(philo->anounce);
 	free(philo->thread);
