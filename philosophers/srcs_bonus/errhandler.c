@@ -12,7 +12,7 @@
 
 #include "../header/philosopher_bonus.h"
 
-int	hdl_syscall(char *msg)
+int	hdl_syscall(const char *msg)
 {
 	write(2, msg, philo_strlen(msg));
 	write(2, " system call false!\n", 20);
@@ -27,7 +27,7 @@ int	hdl_too_few_philo(void)
 	return (FAILURE);
 }
 
-int	hdl_not_legal_num(char *str)
+int	hdl_not_legal_num(const char *str)
 {
 	write(2, str, philo_strlen(str));
 	write(2,
@@ -36,7 +36,7 @@ int	hdl_not_legal_num(char *str)
 	return (FAILURE);
 }
 
-int	hdl_out_of_int(char *str)
+int	hdl_out_of_int(const char *str)
 {
 	write(2, str, philo_strlen(str));
 	write(2,

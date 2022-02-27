@@ -12,7 +12,7 @@
 
 #include "../header/philosophers.h"
 
-int	philo_atoi(char *str)
+int	philo_atoi(const char *str)
 {
 	size_t			idx;
 	unsigned int	result;
@@ -31,7 +31,7 @@ int	philo_atoi(char *str)
 			return (ERR_NOT_NUM);
 		++idx;
 	}
-	return (result);
+	return ((int)result);
 }
 
 size_t	philo_strlen(const char *str)

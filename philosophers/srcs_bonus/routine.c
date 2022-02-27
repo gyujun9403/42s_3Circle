@@ -32,14 +32,16 @@ void	*die_check(void *in)
 	return (NULL);
 }
 
-int	routine(t_philo *philo)
+void	routine(t_philo *philo)
 {
 	philo->when_die = get_time(TRUE) + philo->info[TIME_TO_DIE];
 	pthread_create(philo->thread, NULL, die_check, philo);
 	while (1)
 	{
 		sem_prt_think(philo->idx_of_philo, philo->anounce);
+		sem_wait(philo->restriction);
 		sem_wait(philo->forks);
+		sem_post(philo->restriction);
 		sem_prt_fork(philo->idx_of_philo, philo->anounce);
 		sem_wait(philo->forks);
 		sem_prt_fork(philo->idx_of_philo, philo->anounce);
@@ -48,5 +50,4 @@ int	routine(t_philo *philo)
 		sem_post(philo->forks);
 		action_sleep(philo);
 	}
-	return (FAILURE);
 }

@@ -12,7 +12,7 @@
 
 #include "../header/philosopher_bonus.h"
 
-unsigned long long	get_time(int get_start_time)
+unsigned long long	get_time(const int get_start_time)
 {
 	static unsigned long long	start_time = 0ull;
 	struct timeval				tv;
@@ -29,7 +29,7 @@ unsigned long long	get_time(int get_start_time)
 	return (result);
 }
 
-void	philo_msleep(int msec)
+void	philo_msleep(const int msec)
 {
 	unsigned long long	time_end;
 

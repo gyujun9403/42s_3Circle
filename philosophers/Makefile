@@ -13,7 +13,7 @@
 TARGET = philo
 TARGET_BONUS = philo_bonus
 GCC = gcc
-FLAGS = -g #-Wall -Wextra -Werror #-g3 -fsanitize=address  
+FLAGS = -Wall -Wextra -Werror
 DIR_HEADER = ./header/
 DIR_SRCS = ./srcs/
 DIR_SRCS_BONUS = ./srcs_bonus/

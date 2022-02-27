@@ -27,18 +27,21 @@ int	occupy_sem(sem_t *sem, const int time)
 
 t_philo	*set_philo(const int parsed_input[5])
 {
+	int		num_phlio;
 	t_philo	*philo;
 
+	num_phlio = parsed_input[NUM_OF_PHILO];
 	philo = (t_philo *)ft_malloc(sizeof(t_philo));
 	philo->thread = (pthread_t *)ft_malloc(sizeof(pthread_t));
-	philo->pids = (int *)ft_calloc(sizeof(int), parsed_input[NUM_OF_PHILO]);
-	philo->full = ft_sem_open("full", parsed_input[NUM_OF_PHILO]);
-	philo->forks = ft_sem_open("forks", parsed_input[NUM_OF_PHILO]);
-	philo->die = ft_sem_open("die", parsed_input[NUM_OF_PHILO]);
+	philo->pids = (int *)ft_calloc(sizeof(int), num_phlio);
+	philo->full = ft_sem_open("full", num_phlio);
+	philo->forks = ft_sem_open("forks", num_phlio);
+	philo->restriction = ft_sem_open("restriction", num_phlio - 1);
+	philo->die = ft_sem_open("die", num_phlio);
 	philo->die_check = ft_sem_open("die_check", 1);
 	philo->anounce = ft_sem_open("anounce", 1);
-	if (occupy_sem(philo->full, parsed_input[NUM_OF_PHILO]) == FAILURE
-		|| occupy_sem(philo->die, parsed_input[NUM_OF_PHILO]) == FAILURE)
+	if (occupy_sem(philo->full, num_phlio) == FAILURE
+		|| occupy_sem(philo->die, num_phlio) == FAILURE)
 	{
 		free_philo(philo);
 		return (NULL);
@@ -64,7 +67,7 @@ void	free_philo(t_philo *philo)
 	sem_unlink("die");
 	sem_close(philo->die);
 	sem_unlink("die_check");
-	sem_close(philo->die_check);
+ 	sem_close(philo->die_check);
 	post_sem(philo->full, philo->info[NUM_OF_PHILO]);
 	sem_unlink("full");
 	sem_close(philo->full);

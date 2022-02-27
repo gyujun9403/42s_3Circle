@@ -13,7 +13,7 @@
 #include "../header/philosopher_bonus.h"
 #include <string.h>
 
-void	*ft_malloc(size_t size)
+void	*ft_malloc(const size_t size)
 {
 	void	*result;
 
@@ -26,7 +26,7 @@ void	*ft_malloc(size_t size)
 	return (result);
 }
 
-void	*ft_calloc(size_t count, size_t size)
+void	*ft_calloc(const size_t count, const size_t size)
 {
 	void	*result;
 
