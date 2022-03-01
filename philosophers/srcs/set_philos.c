@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   set_philos.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: gyeon <gyeon@student.42seoul.kr>           +#+  +:+       +#+        */
+/*   By: gyeon <gyeon@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/28 00:23:55 by gyeon             #+#    #+#             */
-/*   Updated: 2022/02/28 00:23:58 by gyeon            ###   ########.fr       */
+/*   Updated: 2022/02/28 19:13:55 by gyeon            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,7 +57,7 @@ int	set_philos(t_philo *philos, const int parsed_input[5])
 	else
 	{
 		philos->is_die = (int *)malloc(sizeof(int) * 1);
-		philos->anounce = (pthread_mutex_t *)malloc(sizeof(pthread_t));
+		philos->anounce = (pthread_mutex_t *)malloc(sizeof(pthread_mutex_t));
 		threads = (pthread_t *)
 			malloc(sizeof(pthread_t) * parsed_input[NUM_OF_PHILO]);
 		if (philos->is_die == NULL
