@@ -1,0 +1,6 @@
+{
+	"files.associations": {
+		"philosopher_bonus.h": "c",
+		"__threading_support": "c"
+	}
+}
