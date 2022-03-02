@@ -10,13 +10,15 @@
 #                                                                              #
 # **************************************************************************** #
 
-TARGET = philo
-TARGET_BONUS = philo_bonus
 GCC = gcc
 FLAGS = -Wall -Wextra -Werror
-DIR_HEADER = ./header/
-DIR_SRCS = ./srcs/
-DIR_SRCS_BONUS = ./srcs_bonus/
+DIR_SRCS = ./philo/srcs/
+DIR_SRCS_BONUS = ./philo_bonus/srcs_bonus/
+DIR_HEADER = $(DIR_SRCS)header/
+DIR_HEADER_BONUS = $(DIR_SRCS_BONUS)header/
+DIR_TARGETS = ./targets/
+TARGET = $(DIR_TARGETS)philo
+TARGET_BONUS = $(DIR_TARGETS)philo_bonus
 SRCS = main.c utils.c errhandler.c actions.c time.c \
 	parsing.c pthreads.c mutexs.c set_philos.c mutex_print.c
 SRCS_BONUS = main_bonus.c utils_bonus.c errhandler_bonus.c \
@@ -29,9 +31,12 @@ all : $(TARGET) $(TARGET_BONUS)
 man : $(TARGET)
 bonus : $(TARGET_BONUS)
 $(TARGET) : $(addprefix $(DIR_SRCS), $(OBJS))
+	@mkdir -p targets
 	$(GCC) $(FLAGS) -o $@ $^
 $(TARGET_BONUS) : $(addprefix $(DIR_SRCS_BONUS), $(OBJS_BONUS))
 	$(GCC) $(FLAGS) -o $@ $^
+%_bonus.o : %_bonus.c
+	$(GCC) $(FLAGS) -c $< -o $@ -I $(DIR_HEADER_BONUS)
 %.o : %.c
 	$(GCC) $(FLAGS) -c $< -o $@ -I $(DIR_HEADER)
 clean :

@@ -62,10 +62,13 @@ void	post_sem(sem_t *sem, const int time)
 
 void	free_philo(t_philo *philo)
 {
+	post_sem(philo->forks, philo->info[NUM_OF_PHILO]);
 	sem_unlink("forks");
 	sem_close(philo->forks);
+	post_sem(philo->die, 1);
 	sem_unlink("die");
 	sem_close(philo->die);
+	post_sem(philo->die_check, philo->info[NUM_OF_PHILO]);
 	sem_unlink("die_check");
 	sem_close(philo->die_check);
 	post_sem(philo->full, philo->info[NUM_OF_PHILO]);
@@ -74,6 +77,7 @@ void	free_philo(t_philo *philo)
 	post_sem(philo->restriction, philo->info[NUM_OF_PHILO] - 1);
 	sem_unlink("restriction");
 	sem_close(philo->restriction);
+	post_sem(philo->anounce, 1);
 	sem_unlink("anounce");
 	sem_close(philo->anounce);
 	free(philo->thread);

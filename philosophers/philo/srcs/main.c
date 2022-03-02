@@ -68,12 +68,11 @@ void	monitor(const t_philo *philo)
 
 int	main(int ac, char **av)
 {
-	unsigned long long	start_time;
 	int					parsed_input[5];
 	t_philo				*philos;
-	pthread_t			ttt;
+	pthread_t			p_scheduler;
 
-	start_time = get_time(TRUE);
+	get_time(TRUE);
 	if (ac != 5 && ac != 6)
 		return (FAILURE);
 	else
@@ -82,10 +81,10 @@ int	main(int ac, char **av)
 	philos = set_philos(parsed_input);
 	if (philos == NULL)
 		return (FAILURE);
-	pthread_create(&ttt, NULL, scheduler, (void *)philos);
+	pthread_create(&p_scheduler, NULL, scheduler, (void *)philos);
 	creat_pthreads(philos);
 	monitor(philos);
-	pthread_detach(ttt);
+	pthread_detach(p_scheduler);
 	detach_pthreads(philos);
 	destroy_mutexs(philos);
 	free_philos(philos);

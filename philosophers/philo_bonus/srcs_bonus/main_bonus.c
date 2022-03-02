@@ -23,7 +23,6 @@ void	*monitor_full(void *in)
 		sem_wait(philo->full);
 	sem_wait(philo->anounce);
 	sem_post(philo->die);
-	idx = 0;
 	return (NULL);
 }
 

@@ -14,7 +14,6 @@
 
 t_philo	*check_malloc(t_philo *result, const int parsed_input[5])
 {
-	int	rt;
 	int	idx;
 
 	if (result != NULL)
@@ -66,13 +65,6 @@ t_philo	*malloc_philos(const int parsed_input[5])
 	return (check_malloc(result, parsed_input));
 }
 
-/*
-**					   left / right
-** thread[0]	: mutex[0]	/ mutex[1]
-** thread[1]	: mutex[1]	/ mutex[2]
-** thread[2]	: mutex[2]	/ mutex[3]
-** thread[n-1]	: mutex[n-1] / mutex[0]
-*/
 void	init_philos(t_philo *philos, const int *parsed_input)
 {
 	int		idx;
